@@ -1,0 +1,155 @@
+openapi: 3.0.0
+info:
+  title: 教学课程管理系统API
+  version: 1.0.0
+  description: 提供教室管理、课程排表、课程搜索和申请管理功能
+
+paths:
+  /api/classroom/add:
+    post:
+      summary: 添加教室
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                campus:
+                  type: string
+                  description: 校区
+                capacity:
+                  type: integer
+                  description: 容量
+                building:
+                  type: string
+                  description: 楼宇
+                roomNumber:
+                  type: integer
+                  description: 房间号
+
+  /api/classroom/modify:
+    put:
+      summary: 修改教室信息
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                classroomId:
+                  type: integer
+                  description: 教室ID
+                newCampus:
+                  type: string
+                  description: 新校区(可选)
+                newCapacity:
+                  type: integer
+                  description: 新容量(可选)
+                newBuilding:
+                  type: string
+                  description: 新楼宇(可选)
+
+  /api/classroom/query:
+    get:
+      summary: 查询教室
+      parameters:
+        - name: keyword
+          in: query
+          required: true
+          description: 关键字(ID/地址/楼宇名称)
+          schema:
+            type: string
+
+  /api/classroom/delete:
+    delete:
+      summary: 删除教室
+      parameters:
+        - name: classroomId
+          in: query
+          required: true
+          description: 教室ID
+          schema:
+            type: integer
+
+  /api/schedule/auto:
+    post:
+      summary: 自动排课(暂未实现)
+      description: 自动为课程分配教室和时间段
+
+  /api/schedule/modify:
+    post:
+      summary: 手动排课
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sectionId:
+                  type: integer
+                  description: 课程章节ID
+                classroomId:
+                  type: integer
+                  description: 教室ID
+                timeSlotId:
+                  type: integer
+                  description: 时间段ID
+
+  /api/search/section:
+    get:
+      summary: 搜索课程章节
+      parameters:
+        - name: teacherId
+          in: query
+          required: false
+          description: 教师ID
+          schema:
+            type: integer
+        - name: classroomId
+          in: query
+          required: false
+          description: 教室ID
+          schema:
+            type: integer
+  /api/application/add:
+    post:
+      summary: 添加申请
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                secId:
+                  type: integer
+                  description: 课程章节ID
+                reason:
+                  type: string
+                  description: 申请原因
+                teacher:
+                  type: string
+                  description: 教师姓名
+
+  /api/application/process:
+    post:
+      summary: 处理申请
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                secId:
+                  type: integer
+                  description: 课程章节ID
+                suggestion:
+                  type: string
+                  description: 处理意见
+                finalDecision:
+                  type: boolean
+                  description: 最终决定
