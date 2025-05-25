@@ -16,7 +16,7 @@ public class ScheduleController {
     
     @Autowired
     private Schedule scheduleService;
-    
+
     /**
      * 自动排课
      */
