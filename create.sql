@@ -1,5 +1,27 @@
 
 USE inforsystem;
+-- 先关闭外键检查，避免因依赖顺序报错
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- 按照命名列出所有表，批量删除
+DROP TABLE IF EXISTS
+    application,
+    grade_change,
+    grade,
+    takes,
+    section,
+    classroom,
+    time_slot,
+    course,
+    student,
+    teacher,
+    administrator,
+    personal_information,
+    `user`,
+    department;
+
+-- 恢复外键检查
+SET FOREIGN_KEY_CHECKS = 1;
 
 CREATE TABLE `student` (
 	`user_id` INTEGER NOT NULL,
@@ -25,7 +47,7 @@ CREATE TABLE `course` (
 
 CREATE TABLE `department` (
 	`dept_name` VARCHAR(255) NOT NULL UNIQUE,
-	`Building` VARCHAR(255) NOT NULL,
+	`campus` VARCHAR(255) NOT NULL,
 	PRIMARY KEY(`dept_name`)
 );
 
@@ -51,7 +73,7 @@ CREATE TABLE `section` (
 
 
 CREATE TABLE `classroom` (
-	`campus` VARCHAR(255) NOT NULL UNIQUE,
+	`campus` VARCHAR(255) NOT NULL ,
 	`room_number` INTEGER NOT NULL,
 	`capacity` INTEGER NOT NULL,
 	`classroom_id` INTEGER NOT NULL AUTO_INCREMENT UNIQUE,
@@ -149,7 +171,7 @@ ALTER TABLE `section`
 ADD FOREIGN KEY(`course_id`) REFERENCES `course`(`course_id`)
 ON UPDATE NO ACTION ON DELETE NO ACTION;
 ALTER TABLE `section`
-ADD FOREIGN KEY(`time_slot_id`) REFERENCES `time_slot`(`time_slot_id`)
+ADD FOREIGN KEY(`time_slot_ids`) REFERENCES `time_slot`(`time_slot_id`)
 ON UPDATE NO ACTION ON DELETE NO ACTION;
 ALTER TABLE `teacher`
 ADD FOREIGN KEY(`dept_name`) REFERENCES `department`(`dept_name`)

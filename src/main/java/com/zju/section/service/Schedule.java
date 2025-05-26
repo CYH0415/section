@@ -63,7 +63,7 @@ public class Schedule {
         // 冲突 & 策略记录
         Map<Integer, Set<Integer>> teacherBooked = new HashMap<>();
         Map<Integer, Set<Integer>> roomBooked    = new HashMap<>();
-        Integer[] longCourseDay = new Integer[1]; // 用数组便于回溯时“传值”
+//        Integer[] longCourseDay = new Integer[1]; // 用数组便于回溯时“传值”
         Map<String, String> groupBuildingMap = new HashMap<>();
 
         // 存放最終分配方案 Section -> (slotId, roomId)
@@ -72,7 +72,7 @@ public class Schedule {
         // 2) 回溯尝试
         boolean ok = backtrack(
                 sections, rooms, slots, courseMap, avgHours,
-                teacherBooked, roomBooked, longCourseDay, groupBuildingMap,
+                teacherBooked, roomBooked, groupBuildingMap,
                 assignment
         );
 
@@ -111,7 +111,7 @@ public class Schedule {
             double avgHours,
             Map<Integer,Set<Integer>> teacherBooked,
             Map<Integer,Set<Integer>> roomBooked,
-            Integer[] longCourseDay,
+//            Integer[] longCourseDay,
             Map<String,String> groupBuildingMap,
             Map<Section, Pair<List<Integer>, Integer>> assignment
     ) {
@@ -131,7 +131,7 @@ public class Schedule {
             List<Pair<List<Integer>,Integer>> opts = feasibleOptions(
                     sec, c, slots, rooms,
                     teacherBooked, roomBooked,
-                    longCourseDay[0], groupBuildingMap,
+                     groupBuildingMap,
                     avgHours
             );
             if (opts.isEmpty()) {
@@ -176,7 +176,7 @@ public class Schedule {
             int roomId = opt.getSecond();
 
             // 保存旧状态以便回溯
-            Integer oldLongDay = longCourseDay[0];
+//            Integer oldLongDay = longCourseDay[0];
             boolean hadBuilding = groupBuildingMap.containsKey(groupKey);
             String oldBuilding = groupBuildingMap.get(groupKey);
 
@@ -186,13 +186,13 @@ public class Schedule {
                 teacherBooked.computeIfAbsent(target.getTeacherId(), k->new HashSet<>()).add(sId);
                 roomBooked.computeIfAbsent(roomId, k->new HashSet<>()).add(sId);
             }
-            // 长课同日
-            int needed = courseMap.get(target.getCourseId()).getPeriod();
-            if (needed > avgHours && oldLongDay == null) {
-                longCourseDay[0] = slots.stream()
-                        .filter(s->slotIds.contains(s.getTimeSlotId()))
-                        .findFirst().get().getDay();
-            }
+//            // 长课同日
+//            int needed = courseMap.get(target.getCourseId()).getPeriod();
+//            if (needed > avgHours && oldLongDay == null) {
+//                longCourseDay[0] = slots.stream()
+//                        .filter(s->slotIds.contains(s.getTimeSlotId()))
+//                        .findFirst().get().getDay();
+//            }
             // “同年级+院系同楼”策略
             if (!hadBuilding) {
                 String building = rooms.stream()
@@ -208,7 +208,7 @@ public class Schedule {
             // 5. 递归尝试下一个
             if (backtrack(sections, rooms, slots, courseMap, avgHours,
                     teacherBooked, roomBooked,
-                    longCourseDay, groupBuildingMap,
+                     groupBuildingMap,
                     assignment)) {
                 return true;
             }
@@ -219,7 +219,7 @@ public class Schedule {
                 teacherBooked.get(target.getTeacherId()).remove(sId);
                 roomBooked.get(roomId).remove(sId);
             }
-            longCourseDay[0] = oldLongDay;
+//            longCourseDay[0] = oldLongDay;
             if (!hadBuilding) {
                 groupBuildingMap.remove(groupKey);
             } else {
@@ -265,10 +265,10 @@ public class Schedule {
      */
     private List<Pair<List<Integer>,Integer>> feasibleOptions(
             Section sec, Course course,
-            List<TimeSlot> slots, List<Classroom> rooms,
+            List<TimeSlot> slots, List<Classroom> roomss,
             Map<Integer,Set<Integer>> teacherBooked,
             Map<Integer,Set<Integer>> roomBooked,
-            Integer longCourseDay,
+//            Integer longCourseDay,
             Map<String,String> groupBuildingMap,
             double avgHours
     ){
@@ -276,12 +276,12 @@ public class Schedule {
         int neededCap = course.getCapacity();
         String neededType = course.getRequiredRoomType();
         int neededHours = course.getPeriod();
-        boolean isLong = neededHours > avgHours; // avgHours 略传入
+//        boolean isLong = neededHours > avgHours; // avgHours 略传入
 
         List<Pair<List<Integer>,Integer>> opts = new ArrayList<>();
 //        String groupKey = course.getGradeYear()+"_"+course.getDeptName();
 //        String fixedBuilding = groupBuildingMap.get(groupKey);
-
+        List<Classroom> rooms = classroomRepository.findAllByDeptName(course.getDeptName());
         for (TimeSlot slot : slots) {
             if (teacherBooked.getOrDefault(teacherId,Set.of()).contains(slot.getTimeSlotId()))
                 continue;
@@ -290,8 +290,8 @@ public class Schedule {
             List<Integer> slotIds = group.stream()
                     .map(TimeSlot::getTimeSlotId)
                     .toList();
-            if (isLong && longCourseDay!=null && !slot.getDay().equals(longCourseDay))
-                continue;
+//            if (isLong && longCourseDay!=null && !slot.getDay().equals(longCourseDay))
+//                continue;
             long dur = Duration.between(slot.getStartTime(),slot.getEndTime()).toHours();
             if (dur < neededHours) continue;
 
@@ -306,137 +306,6 @@ public class Schedule {
         }
         return opts;
     }
-//    @Transactional
-//    public ApiResult<?> auto_schedule2() {
-//        // 1. 拉出待排课节次
-//        List<Section> sections = sectionRepository.findUnscheduledSections();
-//        if (sections.isEmpty()) {
-//            return ApiResult.success("没有待排课的节次");
-//        }
-//
-//        // 2. 一次性批量拉出所有相关 Course，并做映射
-//        List<Integer> courseIds = sections.stream()
-//                .map(Section::getCourseId)
-//                .distinct()
-//                .toList();
-//        Map<Integer, Course> courseMap = courseRepository
-//                .findAllByCourseIdIn(courseIds)
-//                .stream()
-//                .collect(Collectors.toMap(Course::getCourseId, c -> c));
-//
-//        // 3. 计算平均学时，用于区分“长课”
-//        double avgHours = courseMap.values().stream()
-//                .mapToInt(Course::getPeriod)//暂时把学分当学时了，todo
-//                .average()
-//                .orElse(0);
-//
-//        // 4. 按学时降序排，长课优先
-//        sections.sort(Comparator.comparingInt(
-//                sec -> -courseMap.get(sec.getCourseId()).getPeriod()));
-//
-//        // 5. 拉所有教室、时段
-//        List<Classroom> rooms = classroomRepository.findAll();
-//        List<TimeSlot> slots = timeSlotRepository.findAll();
-//
-//        // 冲突检测：教师/教室已占用的时段
-//        Map<Integer, Set<Integer>> teacherBooked = new HashMap<>();
-//        Map<Integer, Set<Integer>> roomBooked    = new HashMap<>();
-//
-//        // 记录“长课”分配的同一天
-//        Integer longCourseDay = null;
-//        // 记录“年级+院系” -> 教学楼todo有可能直接由专业决定教学楼，还有校区需要加入。
-//        Map<String, String> groupBuildingMap = new HashMap<>();
-//
-//        List<Section> scheduled = new ArrayList<>();
-//
-//        // 6. 开始调度
-//        for (Section sec : sections) {
-//            int teacherId = sec.getTeacherId();
-//            Course course = courseMap.get(sec.getCourseId());
-//            int neededCapacity    = course.getCapacity();
-//            String neededRoomType = course.getRequiredRoomType();
-//            int neededHours       = course.getPeriod();
-//            boolean isLongCourse  = neededHours > avgHours;
-//
-//            boolean assigned = false;
-//            String groupKey = course.getGradeYear() + "_" + course.getDeptName();
-//            String fixedBuilding = groupBuildingMap.get(groupKey);
-//
-//            // 遍历所有时段
-//            for (TimeSlot slot : slots) {
-//                int slotId = slot.getTimeSlotId();
-//
-//                // （1）教师时段冲突
-//                if (teacherBooked.getOrDefault(teacherId, Set.of()).contains(slotId)) {
-//                    continue;
-//                }
-//                // （2）长课同日约束
-//                if (isLongCourse && longCourseDay != null && !slot.getDay().equals(longCourseDay)) {
-//                    continue;
-//                }
-//                // （3）学时时长约束
-//                long duration = Duration.between(slot.getStartTime(), slot.getEndTime()).toHours();
-//                if (duration < neededHours) {
-//                    continue;
-//                }
-//
-//                // 遍历教室
-//                for (Classroom room : rooms) {
-//                    int roomId = room.getClassroomId();
-//
-//                    // （4）教室时段冲突
-//                    if (roomBooked.getOrDefault(roomId, Set.of()).contains(slotId)) {
-//                        continue;
-//                    }
-//                    // （5）容量约束
-//                    if (room.getCapacity() < neededCapacity) {
-//                        continue;
-//                    }
-//                    // （6）类型约束
-//                    if (!room.getType().equalsIgnoreCase(neededRoomType)) {
-//                        continue;
-//                    }
-//                    // （7）同年级同院系同楼
-//                    if (fixedBuilding != null && !fixedBuilding.equals(room.getBuilding())) {
-//                        continue;
-//                    }
-//
-//                    // —— 满足所有约束，执行分配 ——
-//                    sec.setTimeSlotIds(slotId);
-//                    sec.setClassroomId(roomId);
-//                    sectionRepository.save(sec);
-//
-//                    // 更新冲突记录
-//                    teacherBooked
-//                            .computeIfAbsent(teacherId, k -> new HashSet<>())
-//                            .add(slotId);
-//                    roomBooked
-//                            .computeIfAbsent(roomId, k -> new HashSet<>())
-//                            .add(slotId);
-//
-//                    // 记录“长课同日”以及“年级+院系同楼”策略
-//                    if (isLongCourse && longCourseDay == null) {
-//                        longCourseDay = slot.getDay();
-//                    }
-//                    groupBuildingMap.putIfAbsent(groupKey, room.getBuilding());
-//
-//                    scheduled.add(sec);
-//                    assigned = true;
-//                    break;
-//                }
-//                if (assigned) break;
-//            }
-//
-//            if (!assigned) {
-//                return ApiResult.failure("节次 " + sec.getSecId() + " 无合适教室/时段");
-//            }
-//        }
-//
-//        return ApiResult.success(scheduled);
-//    }
-
-
-
 
     /**
      * 手动排课方法
