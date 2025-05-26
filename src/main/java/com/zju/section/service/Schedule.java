@@ -48,7 +48,7 @@ public class Schedule {
     public ApiResult<?> auto_schedule() {
         // 1) 拉元数据
         List<Section> sections = sectionRepository.findUnscheduledSections();
-        if (sections.isEmpty()) return ApiResult.success("没有待排课的节次");
+//        if (sections.isEmpty()) return ApiResult.success("没有待排课的节次");
         List<Classroom> rooms = classroomRepository.findAll();
         List<TimeSlot> slots   = timeSlotRepository.findAll();
 
@@ -87,6 +87,7 @@ public class Schedule {
             List<Integer> slotIds = e.getValue().getFirst();
             sec.setTimeSlotIds(slotIds);
             sec.setClassroomId(e.getValue().getSecond());
+            
             sectionRepository.save(sec);
             scheduled.add(sec);
         }
@@ -234,28 +235,47 @@ public class Schedule {
     private List<TimeSlot> collectSlotsForDuration(TimeSlot start,
                                                    List<TimeSlot> allSlots,
                                                    int neededHrs) {
-        List<TimeSlot> result = new ArrayList<>();
-        result.add(start);
-        // 已累积时长（小时）
-        int accumulated = (int) Duration.between(start.getStartTime(), start.getEndTime()).toHours();
-        TimeSlot last = start;
+        // 1. 先从 allSlots 里取出同一天的，并按 startTime 排序
+        List<TimeSlot> daySlots = allSlots.stream()
+                .filter(s -> s.getDay().equals(start.getDay()))
+                .sorted(Comparator.comparing(TimeSlot::getStartTime))
+                .toList();
 
-        // 找同一天、紧接着上一个结束的时段，直至累积够 neededHrs
-        while (accumulated < neededHrs) {
-            // 在 allSlots 里找 day 相同且 startTime == last.endTime 的下一个
-            TimeSlot finalLast = last;
-            Optional<TimeSlot> nextOpt = allSlots.stream()
-                    .filter(s -> s.getDay().equals(finalLast.getDay())
-                            && s.getStartTime().equals(finalLast.getEndTime()))
-                    .findFirst();
-            if (nextOpt.isEmpty()) {
-                // 没有连续的可用段，拼不够
+        // 2. 找到起始时段在这一天列表里的下标
+        int idx = -1;
+        for (int i = 0; i < daySlots.size(); i++) {
+            if (daySlots.get(i).getTimeSlotId().equals(start.getTimeSlotId())) {
+                idx = i;
+                break;
+            }
+        }
+        if (idx < 0) {
+            // 找不到起始时段
+            return List.of();
+        }
+
+        // 3. 准备结果，先放入 start
+        List<TimeSlot> result = new ArrayList<>(neededHrs);
+        result.add(start);
+
+        // 4. 依次往后取 neededHrs-1 段，校验间隔
+        for (int k = 1; k < neededHrs; k++) {
+            int nextIdx = idx + k;
+            if (nextIdx >= daySlots.size()) {
+                // 已经超出当天可用段数
                 return List.of();
             }
-            TimeSlot next = nextOpt.get();
+//            TimeSlot prev = result.get(k - 1);
+            TimeSlot next = daySlots.get(nextIdx);
+//
+//            // 计算 prev.endTime 到 next.startTime 的分钟差
+//            long gapMinutes = Duration.between(prev.getEndTime(), next.getStartTime()).toMinutes();
+//            if (gapMinutes != 10) {
+//                // 如果不是正好 10 分钟，就断开了
+//                return List.of();
+//            }
+
             result.add(next);
-            accumulated += (int) Duration.between(next.getStartTime(), next.getEndTime()).toHours();
-            last = next;
         }
 
         return result;
@@ -292,8 +312,8 @@ public class Schedule {
                     .toList();
 //            if (isLong && longCourseDay!=null && !slot.getDay().equals(longCourseDay))
 //                continue;
-            long dur = Duration.between(slot.getStartTime(),slot.getEndTime()).toHours();
-            if (dur < neededHours) continue;
+//            long dur = Duration.between(slot.getStartTime(),slot.getEndTime()).toHours();
+//            if (dur < neededHours) continue;
 
             for (Classroom r: rooms) {
                 if (roomBooked.getOrDefault(r.getClassroomId(),Set.of())

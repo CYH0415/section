@@ -29,6 +29,11 @@ public interface SectionRepository extends JpaRepository<Section, Integer> {
      * 查找尚未分配教室或时间段的章节
      * @return 课程章节列表
      */
-    @Query("SELECT s FROM Section s WHERE s.classroomId IS NULL OR s.timeSlotIds IS EMPTY")
+    @Query(value = """
+  SELECT * FROM section
+   WHERE (time_slot_ids IS NULL OR JSON_LENGTH(time_slot_ids) = 0)
+     AND classroom_id IS NULL
+""",
+            nativeQuery = true)
     List<Section> findUnscheduledSections();
 }
