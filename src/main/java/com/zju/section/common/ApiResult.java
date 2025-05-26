@@ -50,6 +50,12 @@ public class ApiResult<T> {
         return new ApiResult<>(code, message, null);
     }
 
+    public static ApiResult<?> failure(String message) {
+        return new ApiResult<>(ERROR_CODE, message, null);
+    }
+        
+
+
     public Integer getCode() {
         return code;
     }

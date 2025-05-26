@@ -27,4 +27,7 @@ public class Classroom {
     
     @Column(name = "building")
     private String building;
+
+    @Column(name="type")
+    private String type;
 }

@@ -25,4 +25,6 @@ public class TimeSlot {
     
     @Column(name = "end_time", nullable = false)
     private LocalTime endTime;
+
+
 }

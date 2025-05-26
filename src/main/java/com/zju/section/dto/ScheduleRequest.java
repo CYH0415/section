@@ -2,6 +2,8 @@ package com.zju.section.dto;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 排课请求DTO
  */
@@ -9,5 +11,5 @@ import lombok.Data;
 public class ScheduleRequest {
     private Integer sectionId;
     private Integer classroomId;
-    private Integer timeSlotId;
+    private List<Integer> timeSlotIds;
 }
