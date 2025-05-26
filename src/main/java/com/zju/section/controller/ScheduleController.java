@@ -32,7 +32,7 @@ public class ScheduleController {
         return scheduleService.modify_schedule(
             request.getSectionId(), 
             request.getClassroomId(), 
-            request.getTimeSlotId()
+            request.getTimeSlotIds()
         );
     }
 }

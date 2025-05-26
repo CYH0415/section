@@ -44,4 +44,12 @@ public class Course {
      */
     @Column(name = "required_room_type", nullable = false)
     private String requiredRoomType;
+    @Column(name = "grade_year", nullable = false)
+    private Integer gradeYear;
+
+    /**
+     * 课程课时，表示该课程的总课时数
+     */
+    @Column(name = "period", nullable = false)
+    private Integer period;
 }

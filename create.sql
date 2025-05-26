@@ -16,6 +16,9 @@ CREATE TABLE `course` (
 	`credits` INTEGER NOT NULL,
 	`course_introduction` VARCHAR(255) NOT NULL,
 	`capacity` INTEGER NOT NULL,
+    `required_room_type` VARCHAR(255) NOT NULL,
+    `grade_year` INT NOT NULL DEFAULT 1,
+    `period` INT NOT NULL DEFAULT 1,
 	PRIMARY KEY(`course_id`)
 );
 
@@ -41,7 +44,7 @@ CREATE TABLE `section` (
 	`semester` VARCHAR(255) NOT NULL,
 	`year` YEAR NOT NULL,
 	`classroom_id` INTEGER NOT NULL,
-	`time_slot_id` INTEGER,
+	`time_slot_ids` JSON,
 	`teacher_id` INTEGER NOT NULL,
 	PRIMARY KEY(`sec_id`)
 );
@@ -53,6 +56,7 @@ CREATE TABLE `classroom` (
 	`capacity` INTEGER NOT NULL,
 	`classroom_id` INTEGER NOT NULL AUTO_INCREMENT UNIQUE,
 	`building` VARCHAR(255),
+    `type` VARCHAR(255),
 	PRIMARY KEY(`classroom_id`)
 );
 

@@ -3,6 +3,7 @@ package com.zju.section.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.Year;
+import java.util.List;
 
 /**
  * 课程章节实体类
@@ -29,7 +30,7 @@ public class Section {
     private Integer classroomId;
     
     @Column(name = "time_slot_id")
-    private Integer timeSlotId;
+    private List<Integer> timeSlotIds;
     
     @Column(name = "teacher_id", nullable = false)
     private Integer teacherId;
