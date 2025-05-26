@@ -51,7 +51,7 @@ CREATE TABLE `section` (
 
 
 CREATE TABLE `classroom` (
-	`campus` VARCHAR(255) NOT NULL UNIQUE,
+	`campus` VARCHAR(255) NOT NULL,
 	`room_number` INTEGER NOT NULL,
 	`capacity` INTEGER NOT NULL,
 	`classroom_id` INTEGER NOT NULL AUTO_INCREMENT UNIQUE,
