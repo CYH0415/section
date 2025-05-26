@@ -35,4 +35,18 @@ public interface ClassroomRepository extends JpaRepository<Classroom, Integer> {
      * @return 教室
      */
     Classroom findByCampusAndRoomNumber(String campus, Integer roomNumber);
+        /**
+         * 查出指定院系（deptName）所在校区的所有教室
+         */
+        @Query(
+                value = "SELECT r.* "
+                        + "  FROM classroom r "
+                        + "  JOIN department d "
+                        + "    ON r.campus = d.campus "
+                        + " WHERE d.dept_name = :deptName",
+                nativeQuery = true
+        )
+        List<Classroom> findAllByDeptName(@Param("deptName") String deptName);
+
+
 }
