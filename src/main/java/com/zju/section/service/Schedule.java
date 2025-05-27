@@ -48,7 +48,8 @@ public class Schedule {
     public ApiResult<?> auto_schedule() {
         // 1) 拉元数据
         List<Section> sections = sectionRepository.findUnscheduledSections();
-//        if (sections.isEmpty()) return ApiResult.success("没有待排课的节次");
+        List<Section> nowsections=sectionRepository.findAll();
+        if (sections.isEmpty()) return ApiResult.success("没有待排课的节次",nowsections);
         List<Classroom> rooms = classroomRepository.findAll();
         List<TimeSlot> slots   = timeSlotRepository.findAll();
 
