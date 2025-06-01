@@ -61,11 +61,11 @@ CREATE TABLE `takes` (
 
 
 CREATE TABLE `section` (
-	`course_id` INTEGER NOT NULL AUTO_INCREMENT UNIQUE,
-	`sec_id` INTEGER NOT NULL,
+	`sec_id` INTEGER NOT NULL AUTO_INCREMENT UNIQUE,
+	`course_id` INTEGER NOT NULL,
 	`semester` VARCHAR(255) NOT NULL,
 	`year` YEAR NOT NULL,
-	`classroom_id` INTEGER NOT NULL,
+	`classroom_id` INTEGER,
 	`time_slot_ids` JSON,
 	`teacher_id` INTEGER NOT NULL,
 	PRIMARY KEY(`sec_id`)
@@ -170,9 +170,9 @@ ON UPDATE NO ACTION ON DELETE NO ACTION;
 ALTER TABLE `section`
 ADD FOREIGN KEY(`course_id`) REFERENCES `course`(`course_id`)
 ON UPDATE NO ACTION ON DELETE NO ACTION;
-ALTER TABLE `section`
-ADD FOREIGN KEY(`time_slot_ids`) REFERENCES `time_slot`(`time_slot_id`)
-ON UPDATE NO ACTION ON DELETE NO ACTION;
+-- ALTER TABLE `section`
+-- ADD FOREIGN KEY(`time_slot_ids`) REFERENCES `time_slot`(`time_slot_id`)
+-- ON UPDATE NO ACTION ON DELETE NO ACTION;
 ALTER TABLE `teacher`
 ADD FOREIGN KEY(`dept_name`) REFERENCES `department`(`dept_name`)
 ON UPDATE NO ACTION ON DELETE NO ACTION;
