@@ -9,5 +9,5 @@ import lombok.Data;
 public class AddApplicationRequest {
     private Integer secId;
     private String reason;
-    private String teacher;
+    private Integer teacherId;
 }

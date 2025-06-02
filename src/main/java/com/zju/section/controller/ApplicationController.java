@@ -19,13 +19,12 @@ public class ApplicationController {
     private ApplicationManager applicationManager;
       /**
      * 添加申请
-     */
-    @PostMapping("/add")
+     */    @PostMapping("/add")
     public ApiResult<?> addApplication(@RequestBody AddApplicationRequest request) {
         return applicationManager.add_application(
             request.getSecId(), 
             request.getReason(), 
-            request.getTeacher()
+            request.getTeacherId()
         );
     }
 
@@ -45,5 +44,24 @@ public class ApplicationController {
             request.getSuggestion(), 
             request.getFinalDecision()
         );
+    }
+    
+    /**
+     * 根据教师ID查询历史申请（分页）
+     */
+    @GetMapping("/teacher/{teacherId}/history")
+    public ApiResult<?> queryTeacherApplicationHistory(
+            @PathVariable Integer teacherId,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return applicationManager.queryApplicationsByTeacher(teacherId, page, size);
+    }
+    
+    /**
+     * 根据教师ID查询所有历史申请
+     */
+    @GetMapping("/teacher/{teacherId}/all")
+    public ApiResult<?> queryAllTeacherApplications(@PathVariable Integer teacherId) {
+        return applicationManager.queryAllApplicationsByTeacher(teacherId);
     }
 }

@@ -97,7 +97,6 @@ paths:
                 timeSlotId:
                   type: integer
                   description: 时间段ID
-
   /api/search/section:
     get:
       summary: 搜索课程章节
@@ -114,6 +113,29 @@ paths:
           description: 教室ID
           schema:
             type: integer
+        - name: year
+          in: query
+          required: true
+          description: 学年
+          schema:
+            type: integer
+        - name: semester
+          in: query
+          required: true
+          description: 学期
+          schema:
+            type: string
+
+  /api/search/section/{secId}:
+    get:
+      summary: 根据章节ID查询课程章节详细信息
+      parameters:
+        - name: secId
+          in: path
+          required: true
+          description: 章节ID
+          schema:
+            type: integer
 
   /api/application/add:
     post:
@@ -127,13 +149,12 @@ paths:
               properties:
                 secId:
                   type: integer
-                  description: 课程章节ID
-                reason:
+                  description: 课程章节ID                reason:
                   type: string
                   description: 申请原因
-                teacher:
-                  type: string
-                  description: 教师姓名
+                teacherId:
+                  type: integer
+                  description: 教师ID
 
   /api/application/process:
     post:
@@ -154,3 +175,58 @@ paths:
                 finalDecision:
                   type: boolean
                   description: 最终决定
+
+  /api/application/query:
+    get:
+      summary: 查询所有申请（分页）
+      parameters:
+        - name: page
+          in: query
+          required: false
+          description: 页码（默认1）
+          schema:
+            type: integer
+            default: 1
+        - name: size
+          in: query
+          required: false
+          description: 每页大小（默认10）
+          schema:
+            type: integer
+            default: 10
+
+  /api/application/teacher/{teacherId}/history:
+    get:
+      summary: 根据教师ID查询历史申请（分页）
+      parameters:
+        - name: teacherId
+          in: path
+          required: true
+          description: 教师ID
+          schema:
+            type: integer
+        - name: page
+          in: query
+          required: false
+          description: 页码（默认1）
+          schema:
+            type: integer
+            default: 1
+        - name: size
+          in: query
+          required: false
+          description: 每页大小（默认10）
+          schema:
+            type: integer
+            default: 10
+
+  /api/application/teacher/{teacherId}/all:
+    get:
+      summary: 根据教师ID查询所有历史申请
+      parameters:
+        - name: teacherId
+          in: path
+          required: true
+          description: 教师ID
+          schema:
+            type: integer

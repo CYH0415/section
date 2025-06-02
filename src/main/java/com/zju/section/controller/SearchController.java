@@ -27,4 +27,12 @@ public class SearchController {
         @RequestParam String semester) {
     return searchService.search_section(teacherId, classroomId, year, semester);
 }
+
+    /**
+     * 根据章节ID查询课程章节详细信息
+     */
+    @GetMapping("/section/{secId}")
+    public ApiResult<?> getSectionDetail(@PathVariable Integer secId) {
+        return searchService.getSectionDetail(secId);
+    }
 }
