@@ -4,6 +4,8 @@ import lombok.Data;
 
 @Data
 public class ApplicationHistoryDetailResponse {
+    private Integer appId;
+    private Integer adminId;
     private Integer secId;
     private String reason;
     private Integer teacherId;

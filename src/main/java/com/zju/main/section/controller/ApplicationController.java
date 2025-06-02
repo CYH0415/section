@@ -16,10 +16,11 @@ import com.zju.main.section.service.ApplicationManager;
 public class ApplicationController {
     
     @Autowired
-    private ApplicationManager applicationManager;
+    private ApplicationManager applicationManager;    
       /**
      * 添加申请
-     */    @PostMapping("/add")
+     */    
+    @PostMapping("/add")
     public ApiResult<?> addApplication(@RequestBody AddApplicationRequest request) {
         return applicationManager.add_application(
             request.getSecId(), 
@@ -32,25 +33,40 @@ public class ApplicationController {
     public ApiResult<?> queryApplications(@RequestParam(defaultValue = "1") int page,
                                        @RequestParam(defaultValue = "10") int size) {
         return applicationManager.query_application(page, size);
-    }
-
-    /**
+    }    /**
      * 处理申请
      */
     @PostMapping("/process")
     public ApiResult<?> processApplication(@RequestBody ProcessApplicationRequest request) {
         return applicationManager.process_application(
-            request.getSecId(), 
+            request.getAppId(), 
+            request.getAdminId(),
             request.getSuggestion(), 
             request.getFinalDecision()
         );
     }
-    
-    /**
+      /**
      * 根据教师ID查询所有历史申请
      */
     @GetMapping("/teacher/{teacherId}/all")
     public ApiResult<?> queryAllTeacherApplications(@PathVariable Integer teacherId) {
         return applicationManager.queryAllApplicationsByTeacher(teacherId);
+    }
+      /**
+     * 根据申请ID查询申请详情
+     */
+    @GetMapping("/{appId}")
+    public ApiResult<?> getApplicationById(@PathVariable Integer appId) {
+        return applicationManager.getApplicationById(appId);
+    }
+    
+    /**
+     * 根据管理员ID查询申请列表
+     */
+    @GetMapping("/admin/{adminId}")
+    public ApiResult<?> queryApplicationsByAdmin(@PathVariable Integer adminId,
+                                               @RequestParam(defaultValue = "1") int page,
+                                               @RequestParam(defaultValue = "10") int size) {
+        return applicationManager.queryApplicationsByAdmin(adminId, page, size);
     }
 }

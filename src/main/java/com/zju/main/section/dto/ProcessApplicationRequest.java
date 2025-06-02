@@ -7,7 +7,8 @@ import lombok.Data;
  */
 @Data
 public class ProcessApplicationRequest {
-    private Integer secId;
+    private Integer appId;
+    private Integer adminId;
     private String suggestion;
     private Boolean finalDecision;
 }

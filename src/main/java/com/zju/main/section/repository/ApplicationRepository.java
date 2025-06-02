@@ -11,30 +11,41 @@ import java.util.List;
 
 @Repository
 public interface ApplicationRepository extends JpaRepository<Application, Integer> {
-    
-    /**
-     * 根据课程章节ID查询申请
+      /**
+     * 根据课程章节ID查询所有申请（按申请ID倒序）
      * @param secId 课程章节ID
-     * @return 申请
+     * @return 申请列表
      */
-    Application findBySecId(Integer secId);
-    
-    /**
+    List<Application> findBySecIdOrderByAppIdDesc(Integer secId);
+      /**
      * 根据教师ID查询历史申请（分页）
      * @param teacherId 教师ID
      * @param pageable 分页参数
      * @return 申请列表
      */
-    Page<Application> findByTeacherIdOrderBySecIdDesc(Integer teacherId, Pageable pageable);
-    
-    /**
+    Page<Application> findByTeacherIdOrderByAppIdDesc(Integer teacherId, Pageable pageable);
+      /**
      * 根据教师ID查询历史申请列表
      * @param teacherId 教师ID
      * @return 申请列表
      */
-    List<Application> findByTeacherIdOrderBySecIdDesc(Integer teacherId);
+    List<Application> findByTeacherIdOrderByAppIdDesc(Integer teacherId);
     
     /**
+     * 根据管理员ID查询申请列表
+     * @param adminId 管理员ID
+     * @return 申请列表
+     */
+    List<Application> findByAdminIdOrderByAppIdDesc(Integer adminId);
+    
+    /**
+     * 根据管理员ID查询申请列表（分页）
+     * @param adminId 管理员ID
+     * @param pageable 分页参数
+     * @return 申请列表
+     */
+    Page<Application> findByAdminIdOrderByAppIdDesc(Integer adminId, Pageable pageable);
+      /**
      * 联表查询教师的历史申请，包含课程名和上课地点
      */
     @org.springframework.data.jpa.repository.Query(value = """
@@ -47,7 +58,7 @@ public interface ApplicationRepository extends JpaRepository<Application, Intege
         LEFT JOIN course c ON s.course_id = c.course_id
         LEFT JOIN classroom cr ON s.classroom_id = cr.classroom_id
         WHERE a.teacher_id = :teacherId
-        ORDER BY a.sec_id DESC
+        ORDER BY a.app_id DESC
         """, nativeQuery = true)
     List<java.util.Map<String, Object>> findHistoryWithDetailByTeacherId(@org.springframework.data.repository.query.Param("teacherId") Integer teacherId);
     

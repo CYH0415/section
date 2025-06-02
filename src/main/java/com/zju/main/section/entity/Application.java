@@ -12,9 +12,17 @@ import lombok.Data;
 public class Application {
     
     @Id
-    @Column(name = "sec_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "app_id")
+    private Integer appId;
+    
+    @Column(name = "admin_id")
+    private Integer adminId;
+    
+    @Column(name = "sec_id", nullable = false)
     private Integer secId;
-      @Column(name = "reason", nullable = false, length = 256)
+    
+    @Column(name = "reason", nullable = false, length = 256)
     private String reason;
     
     @Column(name = "teacher_id", nullable = false)
