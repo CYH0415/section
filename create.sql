@@ -1,4 +1,4 @@
-
+CREATE DATABASE IF NOT EXISTS inforsystem;
 USE inforsystem;
 -- 先关闭外键检查，避免因依赖顺序报错
 SET FOREIGN_KEY_CHECKS = 0;
