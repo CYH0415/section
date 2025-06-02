@@ -3,7 +3,7 @@ package com.zju.main.section.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.zju.main.common.ApiResult;
+import com.zju.main.section.common.ApiResult;
 import com.zju.main.section.repository.SectionRepository;
 
 import java.util.ArrayList;

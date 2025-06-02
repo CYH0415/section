@@ -1,4 +1,4 @@
-package com.zju.main.config;
+package com.zju.main.section.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

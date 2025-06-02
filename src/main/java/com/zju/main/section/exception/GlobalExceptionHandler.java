@@ -1,4 +1,4 @@
-package com.zju.main.exception;
+package com.zju.main.section.exception;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.zju.main.common.ApiResult;
+import com.zju.main.section.common.ApiResult;
 
 /**
  * 全局异常处理器

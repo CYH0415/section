@@ -1,4 +1,4 @@
-package com.zju.main.common;
+package com.zju.main.section.common;
 
 /**
  * 统一API响应结果封装

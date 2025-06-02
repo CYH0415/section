@@ -1,4 +1,4 @@
-package com.zju.main.entity;
+package com.zju.main.section.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalTime;

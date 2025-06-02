@@ -3,7 +3,7 @@ package com.zju.main.section.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.zju.main.entity.TimeSlot;
+import com.zju.main.section.entity.TimeSlot;
 
 import java.util.List;
 

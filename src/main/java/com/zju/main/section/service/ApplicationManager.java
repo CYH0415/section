@@ -4,12 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.zju.main.common.ApiResult;
+import com.zju.main.section.common.ApiResult;
 import com.zju.main.section.dto.ApplicationHistoryDetailResponse;
 import com.zju.main.section.dto.QueryApplicationResponse;
 import com.zju.main.section.dto.TeacherApplicationHistoryResponse;
-import com.zju.main.entity.Application;
-import com.zju.main.entity.Section;
+import com.zju.main.section.entity.Application;
+import com.zju.main.section.entity.Section;
 import com.zju.main.section.repository.ApplicationRepository;
 import com.zju.main.section.repository.SectionRepository;
 

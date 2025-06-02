@@ -3,7 +3,7 @@ package com.zju.main.section.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import com.zju.main.common.ApiResult;
+import com.zju.main.section.common.ApiResult;
 import com.zju.main.section.dto.AddClassroomRequest;
 import com.zju.main.section.dto.ModifyClassroomRequest;
 import com.zju.main.section.service.ClassroomManager;

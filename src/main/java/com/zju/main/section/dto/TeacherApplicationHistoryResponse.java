@@ -3,7 +3,7 @@ package com.zju.main.section.dto;
 import lombok.Data;
 import org.springframework.data.domain.Page;
 
-import com.zju.main.entity.Application;
+import com.zju.main.section.entity.Application;
 
 import java.util.List;
 

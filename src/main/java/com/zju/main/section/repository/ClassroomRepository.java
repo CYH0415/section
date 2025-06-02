@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.zju.main.entity.Classroom;
+import com.zju.main.section.entity.Classroom;
 
 import java.util.List;
 
